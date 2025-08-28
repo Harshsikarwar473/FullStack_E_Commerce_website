@@ -24,7 +24,7 @@ public class Seller {
 
 
     @Column(nullable = false)
-    private String E_mail ;
+    private String email ;
 
     private String password ;
 
