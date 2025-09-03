@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface VerificationCodeRepo extends JpaRepository<Verificationcode , Long> {
 
     Verificationcode findByEmail(String email);
+    Verificationcode findByOtp(String otp);
 }

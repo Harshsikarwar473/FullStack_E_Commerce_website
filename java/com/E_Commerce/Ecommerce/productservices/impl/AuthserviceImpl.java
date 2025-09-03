@@ -3,11 +3,13 @@ package com.E_Commerce.Ecommerce.productservices.impl;
 import com.E_Commerce.Ecommerce.config.JwtProvider;
 import com.E_Commerce.Ecommerce.domin.User_Role;
 import com.E_Commerce.Ecommerce.model.Cart;
+import com.E_Commerce.Ecommerce.model.Seller;
 import com.E_Commerce.Ecommerce.model.User;
 import com.E_Commerce.Ecommerce.model.Verificationcode;
 import com.E_Commerce.Ecommerce.productservices.AuthService;
 import com.E_Commerce.Ecommerce.productservices.EmailService;
 import com.E_Commerce.Ecommerce.repo.Cartrepo;
+import com.E_Commerce.Ecommerce.repo.Sellerrepo;
 import com.E_Commerce.Ecommerce.repo.UserRepo;
 import com.E_Commerce.Ecommerce.repo.VerificationCodeRepo;
 import com.E_Commerce.Ecommerce.request.LoginRequest;
@@ -35,6 +37,7 @@ import java.util.List;
 public class AuthserviceImpl implements AuthService {
 
     private final UserRepo userRepo;
+    private final Sellerrepo sellerrepo;
     private final PasswordEncoder passwordEncoder;
     private final Cartrepo cartrepo;
     private final JwtProvider jwtProvider ;
@@ -43,16 +46,30 @@ public class AuthserviceImpl implements AuthService {
     private final CostomUserService costomUserService;
 
     @Override
-    public void sendloginotp(String email) throws Exception {
-        String SIGNING_PREFIX =  "signing";
+    public void sendloginotp(String email, User_Role role ) throws Exception {
+        String SIGNING_PREFIX =  "signing_";
+
         if(email.startsWith(SIGNING_PREFIX)){
             email = email.substring(SIGNING_PREFIX.length());
 
+            if(role.equals(User_Role.ROLE_SELLER)){
+                Seller seller= sellerrepo.findByEmail(email);
+                if(seller==null){
+                    throw new Exception("seller not found .....");
+                }
 
-            User user = userRepo.findByEmail(email);
-            if(user==null){
-                throw new Exception("user not Exists with that email ");
+
             }
+
+            else{
+
+                User user = userRepo.findByEmail(email);
+                if(user==null){
+                    throw new Exception("user not Exists with that email " +email);
+                }
+            }
+
+
         }
         Verificationcode isExist = verificationCodeRepo.findByEmail(email);
         if(isExist!= null ){
@@ -135,6 +152,13 @@ public class AuthserviceImpl implements AuthService {
 
     private Authentication authenticate(String username, String otp) {
        UserDetails userDetails  =  costomUserService.loadUserByUsername(username);
+
+
+        String SELLER_PREFIX = "seller";
+        if(username.startsWith(SELLER_PREFIX)){
+            username=username.substring(SELLER_PREFIX.length());
+
+        }
 
        if(userDetails==null){
            throw new BadCredentialsException("invalid  username ");
