@@ -113,7 +113,7 @@ public class AuthserviceImpl implements AuthService {
 
          user = userRepo.save(createuser);
          Cart cart=new Cart();
-         cart.setUser_name(user);
+         cart.setUser(user);
          cartrepo.save(cart);
      }
      List<GrantedAuthority> authorities = new ArrayList<>();

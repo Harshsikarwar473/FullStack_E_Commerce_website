@@ -31,7 +31,8 @@ public class Order {
     @OneToMany(mappedBy = "order" , cascade = CascadeType.ALL , orphanRemoval = true)
     private List<OrderItems> orderItems= new ArrayList<>();
 
-    private String shippingaddress ;
+    @OneToOne
+    private Address shippingaddress ;
     @Embedded
     private PaymentDetails paymentDetails=new PaymentDetails();
 

@@ -24,7 +24,7 @@ public class CartItems {
     @ManyToOne
     private Product product;
 
-    private String Size ;
+    private String size ;
 
     private int  Quantity = 1 ;
 

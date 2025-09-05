@@ -4,9 +4,11 @@ package com.E_Commerce.Ecommerce.productcontroller;
 import com.E_Commerce.Ecommerce.config.JwtProvider;
 import com.E_Commerce.Ecommerce.exception.SellerException;
 import com.E_Commerce.Ecommerce.model.Seller;
+import com.E_Commerce.Ecommerce.model.SellerReport;
 import com.E_Commerce.Ecommerce.model.Verificationcode;
 import com.E_Commerce.Ecommerce.productservices.AuthService;
 import com.E_Commerce.Ecommerce.productservices.EmailService;
+import com.E_Commerce.Ecommerce.productservices.SellerReportService;
 import com.E_Commerce.Ecommerce.productservices.SellerService;
 import com.E_Commerce.Ecommerce.repo.VerificationCodeRepo;
 import com.E_Commerce.Ecommerce.request.LoginRequest;
@@ -30,6 +32,7 @@ public class SellerController {
     private  final AuthService authService;
     private final EmailService emailService;
     private final JwtProvider jwtProvider;
+    private final SellerReportService sellerReportService;
 
 
 //
@@ -100,6 +103,15 @@ public class SellerController {
 
         return new ResponseEntity<>(seller,HttpStatus.OK);
 
+    }
+
+    @GetMapping("/report")
+    public  ResponseEntity<SellerReport> getSellerReport(
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+        Seller seller = sellerService.getSellerprofile(jwt);
+        SellerReport report = sellerReportService.getSellerReport(seller);
+        return new ResponseEntity<>(report, HttpStatus.OK);
     }
 
     @PatchMapping

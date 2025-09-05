@@ -12,7 +12,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Cart {
 
     @Id
@@ -20,7 +19,8 @@ public class Cart {
     private long id ;
 
     @OneToOne
-    private User user_name ;
+
+    private User user;
 
     @OneToMany(mappedBy = "cart" , cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItems> cartItems = new HashSet<>();

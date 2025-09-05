@@ -8,6 +8,7 @@ import com.E_Commerce.Ecommerce.productservices.CartService;
 import com.E_Commerce.Ecommerce.repo.CartItemRepo;
 import com.E_Commerce.Ecommerce.repo.Cartrepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -32,6 +33,7 @@ public class CartServiceImpl implements CartService {
 
          int totalPrice = quantity* product.getSellingPrice();
          cartItems.setSellingptice(totalPrice);
+         cartItems.setMrp(quantity*product.getMrpprice());
 
 
          cart.getCartItems().add(cartItems);
@@ -44,7 +46,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart findUserCart(User user) {
-        Cart cart = cartrepo.findByUserId(user.getId());
+
+        Cart cart = cartrepo.findByUser(user);
 
 
         int totalprice = 0 ;
@@ -66,7 +69,7 @@ public class CartServiceImpl implements CartService {
     private int calculateDiscountPercentage(int mrp, int sellingprice) {
 
         if(mrp == 0 ){
-            throw new IllegalArgumentException("mrp should be gretter than zero ");
+         return  0 ;
         }
         double dis = mrp-sellingprice;
         double percent = (dis / mrp)*100;

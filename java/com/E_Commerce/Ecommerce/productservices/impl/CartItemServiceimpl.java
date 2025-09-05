@@ -14,22 +14,41 @@ public class CartItemServiceimpl implements CartItemService {
 
     private final CartItemRepo cartItemRepo ;
     @Override
-    public CartItems updateCartItem(Long userid, Long id, CartItems cartItems) {
+    public CartItems updateCartItem(Long userid, Long id, CartItems cartItems) throws Exception {
 
         CartItems item = findCartItemById(id);
 
-        User CartItemUser = item.getCart().getUser_name();
-        if(CartItemUser.getId().equals(userid))
-        return null;
+        User cartItemUser = item.getCart().getUser();
+        if(cartItemUser.getId()==userid){
+            item.setQuantity(item.getQuantity()+cartItems.getQuantity());
+            item.setMrp(item.getQuantity()*item.getProduct().getMrpprice());
+            item.setSellingptice(item.getQuantity()*item.getProduct().getSellingPrice());
+
+            return cartItemRepo.save(item);
+        }
+            throw new Exception("you cant update  this user cart item");
+
+
     }
 
     @Override
-    public void removeCartItem(Long id, Long cartItemId) {
+    public void removeCartItem(Long id, Long cartItemId) throws Exception {
+
+        CartItems item = findCartItemById(cartItemId);
+
+        User cartItemUser = item.getCart().getUser();
+
+        if(cartItemUser.getId()==id){
+            cartItemRepo.delete(item);
+        }
+        else throw new Exception("you cant remove from this cart");
 
     }
 
     @Override
-    public CartItems findCartItemById(Long id) {
-        return null;
+    public CartItems findCartItemById(Long id) throws Exception {
+        return cartItemRepo.findById(id).orElseThrow(()->
+                new Exception("cart item not found "));
+
     }
 }
